@@ -63,20 +63,28 @@ display:flex;
 overflow-x:auto;
 gap:10px;
 padding:15px;
+justify-content:center;
+flex-wrap:wrap;
 }
 
 .categoria{
-background:#c00000;
+background:#333;
 padding:10px 20px;
 border-radius:30px;
 white-space:nowrap;
 cursor:pointer;
 transition:all 0.3s;
+border:2px solid transparent;
 }
 
 .categoria:hover{
-background:#a00000;
+background:#c00000;
 transform:scale(1.05);
+}
+
+.categoria.activo{
+background:#c00000;
+border-color:#ffcc00;
 }
 
 .menu{
@@ -98,6 +106,10 @@ transform:translateY(-10px);
 box-shadow:0 10px 30px rgba(192,0,0,0.3);
 }
 
+.card.oculto{
+display:none;
+}
+
 .card img{
 width:100%;
 height:180px;
@@ -115,7 +127,41 @@ font-weight:bold;
 margin:10px 0;
 }
 
-button{
+.cantidad-control{
+display:flex;
+align-items:center;
+gap:10px;
+margin:10px 0;
+}
+
+.cantidad-control button{
+background:#c00000;
+color:white;
+border:none;
+width:30px;
+height:30px;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+padding:0;
+transition:all 0.3s;
+}
+
+.cantidad-control button:hover{
+background:#a00000;
+}
+
+.cantidad-control input{
+width:50px;
+text-align:center;
+background:#333;
+color:white;
+border:1px solid #c00000;
+padding:5px;
+border-radius:5px;
+}
+
+button.btn-agregar{
 background:#c00000;
 color:white;
 border:none;
@@ -126,15 +172,16 @@ cursor:pointer;
 font-weight:bold;
 font-size:1rem;
 transition:all 0.3s;
+margin-top:10px;
 }
 
-button:hover{
+button.btn-agregar:hover{
 background:#a00000;
 transform:scale(1.05);
 box-shadow:0 5px 15px rgba(192,0,0,0.4);
 }
 
-button:active{
+button.btn-agregar:active{
 transform:scale(0.95);
 }
 
@@ -217,18 +264,57 @@ background:#333;
 padding:15px;
 margin-bottom:10px;
 border-radius:10px;
+border-left:4px solid #c00000;
+}
+
+.item-header{
 display:flex;
 justify-content:space-between;
 align-items:center;
-border-left:4px solid #c00000;
+margin-bottom:10px;
 }
 
 .item-info h4{
 color:#ffcc00;
 }
 
+.item-controles{
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:10px;
+}
+
+.item-controles button{
+background:#c00000;
+color:white;
+border:none;
+width:25px;
+height:25px;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+padding:0;
+transition:all 0.3s;
+font-size:0.9rem;
+}
+
+.item-controles button:hover{
+background:#a00000;
+}
+
+.item-controles input{
+width:40px;
+text-align:center;
+background:#222;
+color:white;
+border:1px solid #c00000;
+padding:5px;
+border-radius:5px;
+}
+
 .item-precio{
-color:#fff;
+color:#ffcc00;
 font-weight:bold;
 }
 
@@ -246,16 +332,76 @@ width:auto;
 
 .btn-eliminar:hover{
 background:#a00000;
+}
+
+.cupon-section{
+background:#333;
+padding:15px;
+border-radius:10px;
+margin-bottom:15px;
+border-left:4px solid #ffcc00;
+}
+
+.cupon-section h4{
+color:#ffcc00;
+margin-bottom:10px;
+}
+
+.cupon-input-group{
+display:flex;
+gap:10px;
+}
+
+.cupon-input-group input{
+flex:1;
+padding:8px;
+background:#222;
+color:white;
+border:1px solid #c00000;
+border-radius:5px;
+}
+
+.cupon-input-group button{
+background:#ffcc00;
+color:#111;
+border:none;
+padding:8px 15px;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+transition:all 0.3s;
+}
+
+.cupon-input-group button:hover{
+background:#ffdd33;
 transform:scale(1.05);
 }
 
-.total{
-background:#c00000;
+.descuento-info{
+color:#4CAF50;
+margin-top:10px;
+font-weight:bold;
+}
+
+.resumen{
+background:#333;
 padding:15px;
-margin-top:20px;
 border-radius:10px;
-font-size:1.3rem;
-text-align:right;
+margin-top:15px;
+}
+
+.resumen-row{
+display:flex;
+justify-content:space-between;
+margin-bottom:8px;
+}
+
+.resumen-row.total{
+border-top:2px solid #c00000;
+padding-top:10px;
+font-size:1.2rem;
+color:#ffcc00;
+font-weight:bold;
 }
 
 .carrito-vacio{
@@ -270,6 +416,11 @@ color:#111;
 font-weight:bold;
 font-size:1.1rem;
 margin-top:20px;
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+cursor:pointer;
 transition:all 0.3s;
 }
 
@@ -315,6 +466,30 @@ opacity:0;
 .notificacion.salida{
 animation:slideOut 0.3s ease-out;
 }
+
+.notificacion.error{
+background:#f44336;
+}
+
+@media(max-width:768px){
+header{
+flex-direction:column;
+gap:10px;
+}
+
+header h1{
+font-size:1.5rem;
+}
+
+.categorias{
+justify-content:flex-start;
+}
+
+.modal-content{
+width:95%;
+max-height:90vh;
+}
+}
 </style>
 </head>
 
@@ -333,82 +508,179 @@ animation:slideOut 0.3s ease-out;
 </section>
 
 <div class="categorias">
-<div class="categoria">Sushis</div>
-<div class="categoria">Entradas</div>
-<div class="categoria">Platillos</div>
+<div class="categoria activo" onclick="filtrarCategoria('todos')">Todos</div>
+<div class="categoria" onclick="filtrarCategoria('sushis')">🍣 Sushis</div>
+<div class="categoria" onclick="filtrarCategoria('entradas')">🍤 Entradas</div>
+<div class="categoria" onclick="filtrarCategoria('platillos')">🍚 Platillos</div>
 </div>
 
-<section class="menu">
+<section class="menu" id="menu">
 
-<div class="card">
+<!-- SUSHIS -->
+<div class="card" data-categoria="sushis">
 <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c">
 <div class="card-content">
 <h3>California Roll</h3>
 <p>Empanizado, camarón, surimi y queso crema.</p>
 <div class="precio">$120</div>
-<button onclick="agregar('California Roll',120)">
-Agregar al Carrito
-</button>
+<div class="cantidad-control">
+<button onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1)">-</button>
+<input type="number" value="1" min="1" class="cantidad-input">
+<button onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1">+</button>
+</div>
+<button class="btn-agregar" onclick="agregarConCantidad(this, 'California Roll', 120)">Agregar al Carrito</button>
 </div>
 </div>
 
-<div class="card">
+<div class="card" data-categoria="sushis">
 <img src="https://images.unsplash.com/photo-1553621042-f6e147245754">
 <div class="card-content">
 <h3>Philadelphia Roll</h3>
 <p>Camarón, philadelphia y aguacate.</p>
 <div class="precio">$155</div>
-<button onclick="agregar('Philadelphia Roll',155)">
-Agregar al Carrito
-</button>
+<div class="cantidad-control">
+<button onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1)">-</button>
+<input type="number" value="1" min="1" class="cantidad-input">
+<button onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1">+</button>
+</div>
+<button class="btn-agregar" onclick="agregarConCantidad(this, 'Philadelphia Roll', 155)">Agregar al Carrito</button>
 </div>
 </div>
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1611143669185-af224c5e3252">
-<div class="card-content">
-<h3>Boneless</h3>
-<p>Salsa BBQ o Mango Habanero.</p>
-<div class="precio">$155</div>
-<button onclick="agregar('Boneless',155)">
-Agregar al Carrito
-</button>
-</div>
-</div>
-
-<div class="card">
-<img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c">
-<div class="card-content">
-<h3>Tempura Roll</h3>
-<p>Camarones tempura, aguacate y mayonesa picante.</p>
-<div class="precio">$165</div>
-<button onclick="agregar('Tempura Roll',165)">
-Agregar al Carrito
-</button>
-</div>
-</div>
-
-<div class="card">
+<div class="card" data-categoria="sushis">
 <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351">
 <div class="card-content">
 <h3>Spicy Tuna Roll</h3>
 <p>Atún picante, pepino y aguacate.</p>
 <div class="precio">$145</div>
-<button onclick="agregar('Spicy Tuna Roll',145)">
-Agregar al Carrito
-</button>
+<div class="cantidad-control">
+<button onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1)">-</button>
+<input type="number" value="1" min="1" class="cantidad-input">
+<button onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1">+</button>
+</div>
+<button class="btn-agregar" onclick="agregarConCantidad(this, 'Spicy Tuna Roll', 145)">Agregar al Carrito</button>
 </div>
 </div>
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351">
+<div class="card" data-categoria="sushis">
+<img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c">
+<div class="card-content">
+<h3>Tempura Roll</h3>
+<p>Camarones tempura, aguacate y mayonesa picante.</p>
+<div class="precio">$165</div>
+<div class="cantidad-control">
+<button onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1)">-</button>
+<input type="number" value="1" min="1" class="cantidad-input">
+<button onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1">+</button>
+</div>
+<button class="btn-agregar" onclick="agregarConCantidad(this, 'Tempura Roll', 165)">Agregar al Carrito</button>
+</div>
+</div>
+
+<div class="card" data-categoria="sushis">
+<img src="https://images.unsplash.com/photo-1611143669185-af224c5e3252">
 <div class="card-content">
 <h3>Dragon Roll</h3>
 <p>Camarón tempura y anguila con aguacate.</p>
 <div class="precio">$180</div>
-<button onclick="agregar('Dragon Roll',180)">
-Agregar al Carrito
-</button>
+<div class="cantidad-control">
+<button onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1)">-</button>
+<input type="number" value="1" min="1" class="cantidad-input">
+<button onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1">+</button>
+</div>
+<button class="btn-agregar" onclick="agregarConCantidad(this, 'Dragon Roll', 180)">Agregar al Carrito</button>
+</div>
+</div>
+
+<!-- ENTRADAS -->
+<div class="card" data-categoria="entradas">
+<img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c">
+<div class="card-content">
+<h3>Gyozas (6 piezas)</h3>
+<p>Dumplings de cerdo y verdura al vapor.</p>
+<div class="precio">$85</div>
+<div class="cantidad-control">
+<button onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1)">-</button>
+<input type="number" value="1" min="1" class="cantidad-input">
+<button onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1">+</button>
+</div>
+<button class="btn-agregar" onclick="agregarConCantidad(this, 'Gyozas', 85)">Agregar al Carrito</button>
+</div>
+</div>
+
+<div class="card" data-categoria="entradas">
+<img src="https://images.unsplash.com/photo-1553621042-f6e147245754">
+<div class="card-content">
+<h3>Edamame</h3>
+<p>Habas de soya hervidas con sal marina.</p>
+<div class="precio">$60</div>
+<div class="cantidad-control">
+<button onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1)">-</button>
+<input type="number" value="1" min="1" class="cantidad-input">
+<button onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1">+</button>
+</div>
+<button class="btn-agregar" onclick="agregarConCantidad(this, 'Edamame', 60)">Agregar al Carrito</button>
+</div>
+</div>
+
+<div class="card" data-categoria="entradas">
+<img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c">
+<div class="card-content">
+<h3>Tabla de Sashimi</h3>
+<p>Selección de atún, salmón y pez blanco.</p>
+<div class="precio">$220</div>
+<div class="cantidad-control">
+<button onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1)">-</button>
+<input type="number" value="1" min="1" class="cantidad-input">
+<button onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1">+</button>
+</div>
+<button class="btn-agregar" onclick="agregarConCantidad(this, 'Tabla de Sashimi', 220)">Agregar al Carrito</button>
+</div>
+</div>
+
+<!-- PLATILLOS -->
+<div class="card" data-categoria="platillos">
+<img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c">
+<div class="card-content">
+<h3>Boneless</h3>
+<p>Salsa BBQ o Mango Habanero.</p>
+<div class="precio">$155</div>
+<div class="cantidad-control">
+<button onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1)">-</button>
+<input type="number" value="1" min="1" class="cantidad-input">
+<button onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1">+</button>
+</div>
+<button class="btn-agregar" onclick="agregarConCantidad(this, 'Boneless', 155)">Agregar al Carrito</button>
+</div>
+</div>
+
+<div class="card" data-categoria="platillos">
+<img src="https://images.unsplash.com/photo-1553621042-f6e147245754">
+<div class="card-content">
+<h3>Arroz Frito</h3>
+<p>Arroz japonés con verduras y proteína al gusto.</p>
+<div class="precio">$120</div>
+<div class="cantidad-control">
+<button onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1)">-</button>
+<input type="number" value="1" min="1" class="cantidad-input">
+<button onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1">+</button>
+</div>
+<button class="btn-agregar" onclick="agregarConCantidad(this, 'Arroz Frito', 120)">Agregar al Carrito</button>
+</div>
+</div>
+
+<div class="card" data-categoria="platillos">
+<img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c">
+<div class="card-content">
+<h3>Fideos Udon</h3>
+<p>Fideos gruesos en caldo caliente con vegetales.</p>
+<div class="precio">$130</div>
+<div class="cantidad-control">
+<button onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1)">-</button>
+<input type="number" value="1" min="1" class="cantidad-input">
+<button onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1">+</button>
+</div>
+<button class="btn-agregar" onclick="agregarConCantidad(this, 'Fideos Udon', 130)">Agregar al Carrito</button>
 </div>
 </div>
 
@@ -422,16 +694,41 @@ Agregar al Carrito
 <span class="cerrar-modal" onclick="cerrarCarrito()">&times;</span>
 </div>
 
+<!-- Cupones -->
+<div class="cupon-section">
+<h4>🎟️ Código de Descuento</h4>
+<div class="cupon-input-group">
+<input type="text" id="inputCupon" placeholder="Ej: DESCUENTO20">
+<button onclick="aplicarCupon()">Aplicar</button>
+</div>
+<div id="mensajeCupon"></div>
+<div class="descuento-info" id="infoDescuento" style="display:none;"></div>
+</div>
+
+<!-- Items del carrito -->
 <ul id="listaCarrito" class="carrito-items">
 <li class="carrito-vacio">Tu carrito está vacío</li>
 </ul>
 
-<div id="totalDiv" style="display:none;">
-<div class="total">
-Total: $<span id="totalPrecio">0</span>
+<!-- Resumen -->
+<div id="resumenDiv" style="display:none;">
+<div class="resumen">
+<div class="resumen-row">
+<span>Subtotal:</span>
+<span>$<span id="subtotal">0</span></span>
 </div>
+<div class="resumen-row">
+<span id="labelDescuento" style="display:none;">Descuento:</span>
+<span id="montoDescuento" style="display:none; color:#4CAF50;">-$0</span>
+</div>
+<div class="resumen-row total">
+<span>Total:</span>
+<span>$<span id="totalPrecio">0</span></span>
+</div>
+</div>
+
 <button class="btn-procesar" onclick="procesarPedido()">
-Procesar Pedido
+✅ Procesar Pedido
 </button>
 </div>
 </div>
@@ -440,6 +737,13 @@ Procesar Pedido
 <script>
 
 let carrito=[];
+let cuponeDisponibles={
+'DESCUENTO10':{descuento:10, tipo:'porcentaje'},
+'DESCUENTO20':{descuento:20, tipo:'porcentaje'},
+'GRATIS50':{descuento:50, tipo:'fijo'},
+'SUSHI2024':{descuento:15, tipo:'porcentaje'}
+};
+let cuponeAplicado=null;
 
 // Cargar carrito al abrir la página
 window.addEventListener('load', function(){
@@ -448,19 +752,50 @@ if(carritoGuardado){
 carrito=JSON.parse(carritoGuardado);
 actualizarCantidad();
 }
+const cuponeGuardado=localStorage.getItem("cuponeAplicado");
+if(cuponeGuardado){
+cuponeAplicado=JSON.parse(cuponeGuardado);
+}
 });
 
-function agregar(nombre,precio){
+function filtrarCategoria(categoria){
+const cards=document.querySelectorAll('.card');
+const categorias=document.querySelectorAll('.categoria');
+
+// Actualizar botones activos
+categorias.forEach(cat=>cat.classList.remove('activo'));
+event.target.classList.add('activo');
+
+// Filtrar cards
+cards.forEach(card=>{
+if(categoria==='todos'){
+card.classList.remove('oculto');
+}else{
+if(card.dataset.categoria===categoria){
+card.classList.remove('oculto');
+}else{
+card.classList.add('oculto');
+}
+}
+});
+}
+
+function agregarConCantidad(btn, nombre, precio){
+const cantidadInput=btn.parentElement.querySelector('.cantidad-input');
+const cantidad=parseInt(cantidadInput.value);
+
+for(let i=0;i<cantidad;i++){
 carrito.push({
 nombre,
 precio,
-id:Date.now()
+id:Date.now()+i
 });
+}
 
-document.getElementById("cantidad-header").innerText=carrito.length;
+actualizarCantidad();
 localStorage.setItem("carrito",JSON.stringify(carrito));
-
-mostrarNotificacion(nombre+" agregado al carrito ✓");
+mostrarNotificacion(`${cantidad}x ${nombre} agregado al carrito ✓`);
+cantidadInput.value=1;
 }
 
 function mostrarNotificacion(mensaje){
@@ -492,41 +827,129 @@ modal.classList.remove('activo');
 
 function mostrarItems(){
 const listaCarrito=document.getElementById("listaCarrito");
-const totalDiv=document.getElementById("totalDiv");
+const resumenDiv=document.getElementById("resumenDiv");
 
 if(carrito.length===0){
 listaCarrito.innerHTML='<li class="carrito-vacio">Tu carrito está vacío</li>';
-totalDiv.style.display='none';
+resumenDiv.style.display='none';
 return;
 }
 
-let html='';
-let total=0;
-
-carrito.forEach((item,index)=>{
-html+=`
-<li class="carrito-item">
-<div class="item-info">
-<h4>${item.nombre}</h4>
-<span class="item-precio">$${item.precio}</span>
-</div>
-<button class="btn-eliminar" onclick="eliminar(${index})">Eliminar</button>
-</li>
-`;
-total+=item.precio;
+// Agrupar items por nombre
+const itemsAgrupados={};
+carrito.forEach(item=>{
+if(!itemsAgrupados[item.nombre]){
+itemsAgrupados[item.nombre]={
+precio:item.precio,
+cantidad:0,
+id:item.id
+};
+}
+itemsAgrupados[item.nombre].cantidad++;
 });
 
-listaCarrito.innerHTML=html;
-document.getElementById("totalPrecio").innerText=total;
-totalDiv.style.display='block';
+let html='';
+let subtotal=0;
+
+for(let nombre in itemsAgrupados){
+const item=itemsAgrupados[nombre];
+const subtotalItem=item.precio*item.cantidad;
+subtotal+=subtotalItem;
+
+html+=`
+<li class="carrito-item">
+<div class="item-header">
+<div class="item-info">
+<h4>${nombre}</h4>
+<span class="item-precio">$${item.precio} c/u</span>
+</div>
+<span class="item-precio">$${subtotalItem}</span>
+</div>
+<div class="item-controles">
+<button onclick="cambiarCantidad('${nombre}', -1)">-</button>
+<input type="number" value="${item.cantidad}" readonly>
+<button onclick="cambiarCantidad('${nombre}', 1)">+</button>
+<button class="btn-eliminar" onclick="eliminarProducto('${nombre}')">Eliminar</button>
+</div>
+</li>
+`;
 }
 
-function eliminar(index){
-carrito.splice(index,1);
+listaCarrito.innerHTML=html;
+
+// Calcular total con descuento
+let total=subtotal;
+document.getElementById("subtotal").innerText=subtotal;
+
+if(cuponeAplicado){
+const descuentoInfo=cuponeDisponibles[cuponeAplicado];
+let montoDesc=0;
+
+if(descuentoInfo.tipo==='porcentaje'){
+montoDesc=Math.floor(subtotal*(descuentoInfo.descuento/100));
+}else{
+montoDesc=descuentoInfo.descuento;
+}
+
+total=Math.max(0, subtotal-montoDesc);
+document.getElementById("labelDescuento").style.display='block';
+document.getElementById("montoDescuento").style.display='block';
+document.getElementById("montoDescuento").innerText=`-$${montoDesc}`;
+document.getElementById("infoDescuento").style.display='block';
+document.getElementById("infoDescuento").innerText=`✓ Cupón "${cuponeAplicado}" aplicado`;
+}else{
+document.getElementById("labelDescuento").style.display='none';
+document.getElementById("montoDescuento").style.display='none';
+document.getElementById("infoDescuento").style.display='none';
+}
+
+document.getElementById("totalPrecio").innerText=total;
+resumenDiv.style.display='block';
+}
+
+function cambiarCantidad(nombre, cambio){
+const indicesDelProducto=carrito
+.map((item, index)=>item.nombre===nombre?index:null)
+.filter(index=>index!==null);
+
+if(cambio>0){
+carrito.push({nombre, precio:carrito[indicesDelProducto[0]].precio, id:Date.now()});
+}else if(cambio<0 && indicesDelProducto.length>0){
+carrito.splice(indicesDelProducto[0], 1);
+}
+
+localStorage.setItem("carrito",JSON.stringify(carrito));
+actualizarCantidad();
+mostrarItems();
+}
+
+function eliminarProducto(nombre){
+carrito=carrito.filter(item=>item.nombre!==nombre);
 localStorage.setItem("carrito",JSON.stringify(carrito));
 actualizarCantidad();
 mostrarItems();
 mostrarNotificacion("Producto eliminado ✓");
+}
+
+function aplicarCupon(){
+const inputCupon=document.getElementById("inputCupon").value.toUpperCase().trim();
+const mensajeCupon=document.getElementById("mensajeCupon");
+
+if(!inputCupon){
+mensajeCupon.innerHTML='<div class="notificacion error">Por favor ingresa un código</div>';
+return;
+}
+
+if(cuponeDisponibles[inputCupon]){
+cuponeAplicado=inputCupon;
+localStorage.setItem("cuponeAplicado",JSON.stringify(cuponeAplicado));
+mensajeCupon.innerHTML='<div style="color:#4CAF50; font-weight:bold;">✓ Cupón aplicado exitosamente</div>';
+mostrarItems();
+setTimeout(()=>mensajeCupon.innerHTML='',2000);
+}else{
+mensajeCupon.innerHTML='<div style="color:#f44336; font-weight:bold;">✗ Cupón inválido</div>';
+setTimeout(()=>mensajeCupon.innerHTML='',2000);
+}
 }
 
 function procesarPedido(){
@@ -536,21 +959,50 @@ return;
 }
 
 let total=0;
-let detalles='Pedido de Sr. Sushi Obregón:\n\n';
+let detalles='📋 PEDIDO Sr. Sushi Obregón:\n\n';
 
+// Agrupar items
+const itemsAgrupados={};
 carrito.forEach(item=>{
-detalles+=`${item.nombre} - $${item.precio}\n`;
-total+=item.precio;
+if(!itemsAgrupados[item.nombre]){
+itemsAgrupados[item.nombre]={
+precio:item.precio,
+cantidad:0
+};
+}
+itemsAgrupados[item.nombre].cantidad++;
 });
 
-detalles+=`\n--- TOTAL: $${total} ---`;
+for(let nombre in itemsAgrupados){
+const item=itemsAgrupados[nombre];
+const subtotalItem=item.precio*item.cantidad;
+detalles+=`${item.cantidad}x ${nombre} - $${subtotalItem}\n`;
+total+=subtotalItem;
+}
 
-// Aquí puedes integrar con WhatsApp, email, o tu sistema de pedidos
-alert(detalles+'\n\n¡Pedido listo para procesar!');
+if(cuponeAplicado){
+const descuentoInfo=cuponeDisponibles[cuponeAplicado];
+let montoDesc=0;
+
+if(descuentoInfo.tipo==='porcentaje'){
+montoDesc=Math.floor(total*(descuentoInfo.descuento/100));
+}else{
+montoDesc=descuentoInfo.descuento;
+}
+
+detalles+=`\n💰 Descuento (${cuponeAplicado}): -$${montoDesc}`;
+total-=montoDesc;
+}
+
+detalles+=`\n\n💵 TOTAL: $${total}`;
+
+alert(detalles+'\n\n✅ ¡Pedido listo para procesar!');
 
 // Limpiar carrito
 carrito=[];
+cuponeAplicado=null;
 localStorage.removeItem("carrito");
+localStorage.removeItem("cuponeAplicado");
 actualizarCantidad();
 cerrarCarrito();
 mostrarNotificacion("¡Pedido enviado! 🎉");
