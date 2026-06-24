@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sr. Sushi Obregón</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#111;
+color:white;
+}
+
+header{
+background:#c00000;
+padding:20px;
+text-align:center;
+}
+
+header h1{
+font-size:2rem;
+}
+
+.hero{
+padding:30px;
+text-align:center;
+}
+
+.hero h2{
+margin-bottom:10px;
+}
+
+.categorias{
+display:flex;
+overflow-x:auto;
+gap:10px;
+padding:15px;
+}
+
+.categoria{
+background:#c00000;
+padding:10px 20px;
+border-radius:30px;
+white-space:nowrap;
+cursor:pointer;
+}
+
+.menu{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+padding:20px;
+}
+
+.card{
+background:#222;
+border-radius:15px;
+overflow:hidden;
+}
+
+.card img{
+width:100%;
+height:180px;
+object-fit:cover;
+}
+
+.card-content{
+padding:15px;
+}
+
+.precio{
+color:#ffcc00;
+font-size:1.2rem;
+font-weight:bold;
+margin:10px 0;
+}
+
+button{
+background:#c00000;
+color:white;
+border:none;
+padding:10px;
+width:100%;
+border-radius:10px;
+cursor:pointer;
+}
+
+.carrito{
+position:fixed;
+bottom:20px;
+right:20px;
+background:#c00000;
+padding:15px;
+border-radius:50px;
+font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🍣 Sr. Sushi Obregón</h1>
+</header>
+
+<section class="hero">
+<h2>Ordena tus favoritos</h2>
+<p>Sushi, entradas y platillos japoneses.</p>
+</section>
+
+<div class="categorias">
+<div class="categoria">Sushis</div>
+<div class="categoria">Entradas</div>
+<div class="categoria">Platillos</div>
+</div>
+
+<section class="menu">
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c">
+<div class="card-content">
+<h3>California Roll</h3>
+<p>Empanizado, camarón, surimi y queso crema.</p>
+<div class="precio">$120</div>
+<button onclick="agregar('California Roll',120)">
+Agregar
+</button>
+</div>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1553621042-f6e147245754">
+<div class="card-content">
+<h3>Philadelphia Roll</h3>
+<p>Camarón, philadelphia y aguacate.</p>
+<div class="precio">$155</div>
+<button onclick="agregar('Philadelphia Roll',155)">
+Agregar
+</button>
+</div>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1611143669185-af224c5e3252">
+<div class="card-content">
+<h3>Boneless</h3>
+<p>Salsa BBQ o Mango Habanero.</p>
+<div class="precio">$155</div>
+<button onclick="agregar('Boneless',155)">
+Agregar
+</button>
+</div>
+</div>
+
+</section>
+
+<div class="carrito">
+🛒 <span id="cantidad">0</span>
+</div>
+
+<script>
+
+let carrito=[];
+
+function agregar(nombre,precio){
+
+carrito.push({
+nombre,
+precio
+});
+
+document.getElementById("cantidad").innerText=
+carrito.length;
+
+localStorage.setItem(
+"carrito",
+JSON.stringify(carrito)
+);
+
+alert(nombre+" agregado");
+}
+
+</script>
+
+</body>
+</html>
