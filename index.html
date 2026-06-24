@@ -278,11 +278,48 @@ margin-bottom:10px;
 color:#ffcc00;
 }
 
+.item-observaciones{
+background:#222;
+padding:10px;
+margin-top:10px;
+border-radius:5px;
+border-left:3px solid #ffcc00;
+}
+
+.item-observaciones textarea{
+width:100%;
+background:#111;
+color:#ffcc00;
+border:1px solid #c00000;
+padding:8px;
+border-radius:5px;
+font-size:0.9rem;
+resize:vertical;
+font-family:Arial,sans-serif;
+}
+
+.item-observaciones label{
+display:block;
+margin-bottom:5px;
+font-size:0.9rem;
+color:#ffcc00;
+}
+
+.observacion-guardada{
+background:#111;
+padding:8px;
+margin-top:5px;
+border-radius:5px;
+font-size:0.85rem;
+color:#4CAF50;
+}
+
 .item-controles{
 display:flex;
 align-items:center;
 gap:10px;
 margin-top:10px;
+flex-wrap:wrap;
 }
 
 .item-controles button{
@@ -331,6 +368,23 @@ width:auto;
 }
 
 .btn-eliminar:hover{
+background:#a00000;
+}
+
+.btn-guardar-obs{
+background:#c00000;
+color:white;
+border:none;
+padding:5px 10px;
+border-radius:5px;
+cursor:pointer;
+margin-top:5px;
+width:auto;
+font-size:0.9rem;
+transition:all 0.3s;
+}
+
+.btn-guardar-obs:hover{
 background:#a00000;
 }
 
@@ -788,7 +842,8 @@ for(let i=0;i<cantidad;i++){
 carrito.push({
 nombre,
 precio,
-id:Date.now()+i
+id:Date.now()+i,
+observaciones:''
 });
 }
 
@@ -837,15 +892,21 @@ return;
 
 // Agrupar items por nombre
 const itemsAgrupados={};
-carrito.forEach(item=>{
+carrito.forEach((item, index)=>{
 if(!itemsAgrupados[item.nombre]){
 itemsAgrupados[item.nombre]={
 precio:item.precio,
 cantidad:0,
-id:item.id
+id:item.id,
+indices:[],
+observaciones:item.observaciones
 };
 }
 itemsAgrupados[item.nombre].cantidad++;
+itemsAgrupados[item.nombre].indices.push(index);
+if(item.observaciones){
+itemsAgrupados[item.nombre].observaciones=item.observaciones;
+}
 });
 
 let html='';
@@ -865,6 +926,15 @@ html+=`
 </div>
 <span class="item-precio">$${subtotalItem}</span>
 </div>
+
+<div class="item-observaciones">
+<label for="obs-${nombre}">📝 Observaciones (sin cebolla, sin picante, etc):</label>
+<textarea id="obs-${nombre}" placeholder="Ej: Sin cebolla, extra salsa, sin wasabi..." maxlength="200">${item.observaciones}</textarea>
+<small style="color:#999;">Máximo 200 caracteres</small>
+<button class="btn-guardar-obs" onclick="guardarObservaciones('${nombre}', this)">Guardar notas</button>
+${item.observaciones ? `<div class="observacion-guardada">✓ ${item.observaciones}</div>` : ''}
+</div>
+
 <div class="item-controles">
 <button onclick="cambiarCantidad('${nombre}', -1)">-</button>
 <input type="number" value="${item.cantidad}" readonly>
@@ -907,13 +977,36 @@ document.getElementById("totalPrecio").innerText=total;
 resumenDiv.style.display='block';
 }
 
+function guardarObservaciones(nombre, btn){
+const textarea=btn.parentElement.querySelector('textarea');
+const observaciones=textarea.value.trim();
+
+// Actualizar observaciones en el carrito
+carrito.forEach(item=>{
+if(item.nombre===nombre){
+item.observaciones=observaciones;
+}
+});
+
+localStorage.setItem("carrito",JSON.stringify(carrito));
+mostrarNotificacion("Observaciones guardadas ✓");
+
+// Redibujar para mostrar la confirmación
+mostrarItems();
+}
+
 function cambiarCantidad(nombre, cambio){
 const indicesDelProducto=carrito
 .map((item, index)=>item.nombre===nombre?index:null)
 .filter(index=>index!==null);
 
 if(cambio>0){
-carrito.push({nombre, precio:carrito[indicesDelProducto[0]].precio, id:Date.now()});
+carrito.push({
+nombre, 
+precio:carrito[indicesDelProducto[0]].precio, 
+id:Date.now(),
+observaciones:carrito[indicesDelProducto[0]].observaciones
+});
 }else if(cambio<0 && indicesDelProducto.length>0){
 carrito.splice(indicesDelProducto[0], 1);
 }
@@ -967,16 +1060,24 @@ carrito.forEach(item=>{
 if(!itemsAgrupados[item.nombre]){
 itemsAgrupados[item.nombre]={
 precio:item.precio,
-cantidad:0
+cantidad:0,
+observaciones:item.observaciones
 };
 }
 itemsAgrupados[item.nombre].cantidad++;
+if(item.observaciones){
+itemsAgrupados[item.nombre].observaciones=item.observaciones;
+}
 });
 
 for(let nombre in itemsAgrupados){
 const item=itemsAgrupados[nombre];
 const subtotalItem=item.precio*item.cantidad;
-detalles+=`${item.cantidad}x ${nombre} - $${subtotalItem}\n`;
+detalles+=`${item.cantidad}x ${nombre} - $${subtotalItem}`;
+if(item.observaciones){
+detalles+=`\n  📝 Notas: ${item.observaciones}`;
+}
+detalles+=`\n`;
 total+=subtotalItem;
 }
 
